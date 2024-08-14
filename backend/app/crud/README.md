@@ -1,0 +1,1 @@
+Get data from DB server using raw query etc.
