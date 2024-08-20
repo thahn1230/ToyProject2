@@ -1,1 +1,1 @@
-DB data processing by developer.
+DB data processed by developer.
