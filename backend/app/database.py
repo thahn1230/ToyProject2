@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sshtunnel import SSHTunnelForwarder
 
-from secure.db_config import db_config
+from app.secure.db_config import db_config
 
 Base = declarative_base()
 
@@ -61,5 +61,3 @@ class Database:
     def close_tunnel(self):
         if self.tunnel:
             self.tunnel.stop()
-    
-create_db_connection()
