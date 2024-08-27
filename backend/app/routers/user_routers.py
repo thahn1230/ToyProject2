@@ -24,4 +24,8 @@ async def register_user(params: dict):
 
 @router.post("/user/modify_user")
 async def modify_user(params: dict):
-    return JSONResponse({"result" : modify_user_info(params)})
+    result = modify_user_info(params)
+    if result: 
+        return JSONResponse({"result" : True})
+    else :
+        return JSONResponse({"result" : False})
