@@ -3,7 +3,7 @@ from fastapi.routing import APIRoute
 from fastapi.staticfiles import StaticFiles
 
 from app.routers.user_routers import router as user_routers
-
+from app.routers.score_routers import router as score_routers
 
 app = FastAPI()
 
@@ -12,6 +12,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(user_routers)
+app.include_router(score_routers)
 
 @app.get('/')
 async def home(request: Request):

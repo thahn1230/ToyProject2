@@ -9,7 +9,7 @@ router = APIRouter()
 async def check_user_info(params: dict):
     id = params["id"]
     result = check_user_df(id=id)
-    print(result)
+
     if result != False:
         return JSONResponse({
             "result" : True,
@@ -20,7 +20,11 @@ async def check_user_info(params: dict):
 
 @router.post("/user/sign_up")
 async def register_user(params: dict):
-    return JSONResponse({"sign_up" : sign_up(params)})
+    result = sign_up(params)
+    if result: 
+        return JSONResponse({"result" : True})
+    else :
+        return JSONResponse({"result" : False})
 
 @router.post("/user/modify_user")
 async def modify_user(params: dict):

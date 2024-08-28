@@ -1,6 +1,8 @@
 from app.database import Database
+from app.crud.score_crud import register_user
 
 import pandas as pd
+from sqlalchemy import text
 
 engine = Database().get_engine()
 
@@ -31,6 +33,7 @@ def sign_up(user_info: dict):
 
         # User 테이블에 데이터 삽입 (테이블이 이미 존재한다고 가정)
         user_info_df.to_sql('User', con=engine, if_exists='append', index=False, method='multi')
+        register_user(user_id=user_info["user_id"])
 
         return True
     except Exception as e:
@@ -59,21 +62,23 @@ def modify_user_info(user_info: dict):
             # user_id가 있는 경우 데이터 대체 (UPDATE 쿼리 실행)
             update_query = """
             UPDATE reskku.User
-            SET username = %s, student_id = %s,
-            department = %s, major = %s, profile_pic = %s
-            WHERE user_id = %s
+            SET username = :username, student_id = :student_id,
+            department = :department, major = :major, profile_pic = :profile_pic
+            WHERE user_id = :user_id
             """
-            update_params = (user_info['username'], 
-                             user_info['student_id'], 
-                             user_info['department'],
-                             user_info['major'],
-                             user_info['profile_pic'],
-                             user_id)
+            update_params = {
+                'username': user_info['username'], 
+                'student_id': user_info['student_id'], 
+                'department': user_info['department'],
+                'major': user_info['major'],
+                'profile_pic': user_info['profile_pic'],
+                'user_id': user_id
+            }
             
             with engine.connect() as connection:
-                connection.execute(update_query, update_params)
-            
-            return True
+                with connection.begin():  # 트랜잭션 시작
+                    connection.execute(text(update_query), update_params)
+
         else:
             # user_id가 없는 경우 False 반환 및 오류 메시지 출력
             print(f"Error: user_id {user_id} not found.")
